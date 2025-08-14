@@ -38,3 +38,8 @@ Para interactuar con la base de datos, primero debemos instalar el JDBC en nuest
 ```
 
 **No te olvides de recargar el proyecto :smile:**
+
+## :pen: Secuencia de Desarrollo
+
+1. Desarrollar la logica para conectarnos con la base de datos.
+2. Desarrollar el dominio del problema
