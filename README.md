@@ -43,3 +43,5 @@ Para interactuar con la base de datos, primero debemos instalar el JDBC en nuest
 
 1. Desarrollar la logica para conectarnos con la base de datos.
 2. Desarrollar el dominio del problema
+3. Desarrollar la capa de datos que tendra los DAO. Estos permiten la interaccion con la BD
+
