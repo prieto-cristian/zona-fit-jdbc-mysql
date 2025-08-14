@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import static zona_fit.conexion.Conexion.getConexion;
+
 public class ClienteDAO implements IClienteDAO{
 
     @Override
@@ -17,7 +19,7 @@ public class ClienteDAO implements IClienteDAO{
         PreparedStatement ps;
         ResultSet rs;
         try{
-            ps = Conexion.getConexion().prepareStatement(consultaSQL);
+            ps = getConexion().prepareStatement(consultaSQL);
             rs = ps.executeQuery();
             while(rs.next()){
                 var cliente = new Cliente();
@@ -40,7 +42,7 @@ public class ClienteDAO implements IClienteDAO{
         ResultSet rs;
         String consultaSQL = "SELECT * FROM cliente WHERE id = ?;";
         try{
-            ps = Conexion.getConexion().prepareStatement(consultaSQL);
+            ps = getConexion().prepareStatement(consultaSQL);
             ps.setInt(1, cliente.getId());
             rs = ps.executeQuery();
             if(rs.next()){
@@ -57,16 +59,53 @@ public class ClienteDAO implements IClienteDAO{
 
     @Override
     public boolean registrarCliente(Cliente cliente) {
+        PreparedStatement ps;
+        ResultSet rs;
+        String consultaSQL = "INSERT INTO cliente(nombre, apellido, membresia) " +
+                "VALUES (?, ?, ?);";
+        try{
+            ps = getConexion().prepareStatement(consultaSQL);
+            ps.setString(1, cliente.getNombre());
+            ps.setString(2, cliente.getApellido());
+            ps.setInt(3, cliente.getMembresia());
+            var resultado = ps.executeUpdate();
+            return resultado == 1;
+        }catch (Exception e){
+            System.out.println("Error al conectarse a la DB: " + e.getMessage());
+        }
         return false;
     }
 
     @Override
     public boolean modificarCliente(Cliente cliente) {
+        PreparedStatement ps;
+        String consultaSQL = "UPDATE cliente SET nombre= ?, apellido= ?, membresia= ? WHERE (id = ?)";
+        try{
+            ps = getConexion().prepareStatement(consultaSQL);
+            ps.setString(1, cliente.getNombre());
+            ps.setString(2, cliente.getApellido());
+            ps.setInt(3, cliente.getMembresia());
+            ps.setInt(4, cliente.getId());
+            var resultado = ps.executeUpdate();
+            return resultado == 1;
+        }catch (Exception e){
+            System.out.println("Error al conectarse a la DB: " + e.getMessage());
+        }
         return false;
     }
 
     @Override
     public boolean eliminarCliente(Cliente cliente) {
+        PreparedStatement ps;
+        String consultaSQL = "DELETE FROM cliente WHERE (id = ?)";
+        try {
+            ps = getConexion().prepareStatement(consultaSQL);
+            ps.setInt(1, cliente.getId());
+            var resultado = ps.executeUpdate();
+            return resultado == 1;
+        } catch (Exception e) {
+            System.out.println("Error al conectarse a la DB: " + e.getMessage());
+        }
         return false;
     }
 
@@ -85,5 +124,35 @@ public class ClienteDAO implements IClienteDAO{
         }else{
             System.out.println("No encontramos al cliente" + clienteABuscar);
         }
+
+        // Registrar un Cliente
+        System.out.println("Registrar un cliente");
+        var nuevoCliente = new Cliente(700, "Pepito", "Gonzales");
+        var resultado = clienteNegocio.registrarCliente(nuevoCliente);
+        System.out.println("Resultado de la operacion: " + resultado);
+        clienteNegocio.listarClientes().forEach(System.out::println);
+
+        // Modificar un cliente de la base de datos
+        System.out.println("Modificar un cliente");
+        // Suponiendo que tenemos el cliente: Pepito, Gonzales, 700 (membresia) y Id 9
+        // Y queremos modificarlo: Pepito Gonsalez 1000 y ID 9
+        var clienteAModificar = new Cliente(9, 1000, "Pepito", "Gonsalez");
+        var seModifico = clienteNegocio.modificarCliente(clienteAModificar);
+        if(seModifico){
+            System.out.println("Modificacion realizada con exito!");
+        }else{
+            System.out.println("No se pudo realizar la modificacion");
+        }
+        clienteNegocio.listarClientes().forEach(System.out::println);
+
+        // Eliminar Cliente
+        var clienteAEliminar = new Cliente(22);
+        var seElimino = clienteNegocio.eliminarCliente(clienteAEliminar);
+        if(seElimino) {
+            System.out.println("Se elimino el cliente con ID: " + clienteAEliminar.getId());
+        }else{
+            System.out.println("No se encontro un cliente con el ID: " + clienteAEliminar.getId());
+        }
+        clienteNegocio.listarClientes().forEach(System.out::println);
     }
 }
