@@ -17,13 +17,4 @@ public class Conexion {
         }
         return conexion;
     }
-
-    public static void main(String[] args) {
-        var conexion = Conexion.getConexion();
-        if(conexion != null){
-            System.out.println("Conexion exitosa: " + conexion);
-        }else{
-            System.out.println("Error al conectarse");
-        }
-    }
 }
