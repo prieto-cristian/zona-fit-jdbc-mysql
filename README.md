@@ -45,3 +45,6 @@ Para interactuar con la base de datos, primero debemos instalar el JDBC en nuest
 2. Desarrollar el dominio del problema
 3. Desarrollar la capa de datos que tendra los DAO. Estos permiten la interaccion con la BD
 
+## Cerrando conexiones
+
+En los metodos de las clases DAO se separa la posible excepcion que puede ocurrir cuando se cierra la conexion con DB. Esto separa las excepciones, haciendo que se mas facil de saber si la excepcion ocurrio por un fallo al momento de realizar una operacion con DB o si fue por un fallo en el cierre de conexion.
