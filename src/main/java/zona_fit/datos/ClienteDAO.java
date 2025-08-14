@@ -38,7 +38,7 @@ public class ClienteDAO implements IClienteDAO{
             try {
                 con.close();
             }catch (Exception e){
-                System.out.println("Error al cerrar conexion: " e.getMessage());
+                System.out.println("Error al cerrar conexion: " + e.getMessage());
             }
         }
         return listaClientes;
